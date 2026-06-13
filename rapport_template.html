@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; color: #00A3E0; }
+        .score-box { border: 2px solid #000; padding: 20px; text-align: center; }
+        .faille { color: red; }
+        .ok { color: green; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Rapport d'Audit GoShield</h1>
+        <p>Date : {{Date}}</p>
+    </div>
+    
+    <div class="score-box">
+        <h2>Score Global : {{Score}}/100</h2>
+    </div>
+
+    <h3>Détails techniques :</h3>
+    <ul>
+        {{Details}}
+    </ul>
+
+    <p><i>Audit généré automatiquement par GoShield.</i></p>
+</body>
+</html>
+
