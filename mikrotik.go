@@ -1,22 +1,37 @@
+package main
+
+import (
+	"strings"
+)
+
+// AnalyserMikrotik traite spécifiquement les fichiers de configuration Mikrotik
 func AnalyserMikrotik(config string) string {
-    var result []string
+	var res []string
 
-    // Audit existant
-    if strings.Contains(config, "telnet") && !strings.Contains(config, "disabled=yes") {
-        result = append(result, "Faille : Telnet actif.")
-    }
+	// 1. Vérification du protocole Telnet (doit être désactivé)
+	if strings.Contains(config, "telnet") && !strings.Contains(config, "disabled=yes") {
+		res = append(res, "Faille : Telnet actif (non sécurisé).")
+	}
 
-    // NOUVEAU : Module Syslog
-    if !strings.Contains(config, "/system logging") {
-        result = append(result, "Faille : Système de logs désactivé.")
-    }
+	// 2. Vérification du Syslog (Traçabilité)
+	if !strings.Contains(config, "/system logging") {
+		res = append(res, "Faille : Système de logs non configuré.")
+	}
 
-    // NOUVEAU : Module VLANs
-    if !strings.Contains(config, "/interface vlan") {
-        result = append(result, "Attention : Pas de segmentation VLAN détectée.")
-    }
+	// 3. Vérification de la segmentation (VLANs)
+	if !strings.Contains(config, "/interface vlan") {
+		res = append(res, "Attention : Aucun VLAN détecté (réseau plat à risque).")
+	}
 
-    if len(result) == 0 { return "Audit Mikrotik : Configuration robuste." }
-    return "Audit Mikrotik : " + strings.Join(result, " | ")
+	// 4. Vérification du Firewall (Protection périmétrique)
+	if !strings.Contains(config, "/ip firewall filter") {
+		res = append(res, "Faille : Aucune règle de pare-feu détectée.")
+	}
+
+	if len(res) == 0 {
+		return "Audit Mikrotik : Configuration robuste."
+	}
+
+	return strings.Join(res, " | ")
 }
 
